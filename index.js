@@ -11,8 +11,13 @@ window.onload = () => {
   var ambient = new THREE.AmbientLight("#85b2cd");
   light.position.set( 0, -70, 100 ).normalize();
 
+  var geometry = new THREE.SphereGeometry(10, 32, 32);
+  var material = new THREE.MeshBasicMaterial({ color: 0xcc1c1c, wireframe: true });
+  var sun = new THREE.Mesh(geometry, material);
+  sun.position.set(0,0,200);
   scene.add(light);
   scene.add(ambient);
+  scene.add(sun);
 
   var loader = new THREE.GLTFLoader();
   loader.load('http://127.0.0.1:8080/ISS_stationary.glb', (gltf) => {
