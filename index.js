@@ -1,28 +1,36 @@
 window.onload = () => {
   var scene = new THREE.Scene();
   var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-  
+  var mesh;
+
   var renderer = new THREE.WebGLRenderer();
   renderer.setSize( window.innerWidth, window.innerHeight );
   document.body.appendChild( renderer.domElement );
 
-  var geometry = new THREE.BoxGeometry();
-  var material = new THREE.MeshBasicMaterial({ color: 0x00ff00, side:THREE.DoubleSide });
-  var cube = new THREE.Mesh( geometry, material );
-  cube.geometry.faces[5].color.setHex( 0xff0000 ); 
-  cube.geometry.faces[5].color.setHex( 0xff00ff ); 
-  cube.geometry.faces[5].color.setHex( 0x0000ff ); 
-  // mesh.geometry.colorsNeedUpdate = true;
+  var light = new THREE.DirectionalLight("#c1582d", 1);
+  var ambient = new THREE.AmbientLight("#85b2cd");
+  light.position.set( 0, -70, 100 ).normalize();
 
-  scene.add( cube );
+  scene.add(light);
+  scene.add(ambient);
 
-  camera.position.z = 5;
+  var loader = new THREE.GLTFLoader();
+  loader.load('http://127.0.0.1:8080/ISS_stationary.glb', (gltf) => {
+    mesh = gltf.scene;
+    scene.add( mesh );
+  }, () => {
+    console.log("loading...");
+  }, () => {
+    console.log("error loading 3D model");
+  })
+
+  camera.position.z = 80;
+
+  var controls = new THREE.OrbitControls( camera, renderer.domElement );
 
   function animate() {
     requestAnimationFrame(animate);
-    cube.rotation.x += 0.01;
-    cube.rotation.y += 0.01;
-
+    controls.update();
     renderer.render( scene, camera );
   }
 
